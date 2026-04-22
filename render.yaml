@@ -1,0 +1,61 @@
+services:
+  # Backend API Service
+  - type: web
+    name: student-management-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false  # Set in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: CLIENT_URL
+        value: https://student-management-frontend.onrender.com  # Update with your frontend URL
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # Frontend Static Site
+  - type: static
+    name: student-management-frontend
+    runtime: static
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://student-management-api.onrender.com/api  # Update with your API URL
+      - key: VITE_SOCKET_URL
+        value: https://student-management-api.onrender.com  # Update with your API URL
+
+  # Alternative: Docker deployment
+  - type: web
+    name: student-management-api-docker
+    runtime: docker
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

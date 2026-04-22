@@ -17,6 +17,10 @@ const studentSchema = new mongoose.Schema({
         required: [true, 'Course is required'],
         trim: true
     },
+    image: {
+        type: String,
+        trim: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

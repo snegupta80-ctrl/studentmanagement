@@ -1,8 +1,26 @@
 const Student = require('../models/student.model');
 const mongoose = require('mongoose');
 
+// Import io instance for emitting real-time events
+let io;
+const getIO = () => {
+    if (!io) {
+        const serverModule = require('../server');
+        io = serverModule.io;
+    }
+    return io;
+};
+
 exports.createStudent = async (data) => {
-    return await Student.create(data);
+    const student = await Student.create(data);
+    
+    // Emit real-time event
+    const ioInstance = getIO();
+    if (ioInstance) {
+        ioInstance.emit('studentCreated', student);
+    }
+    
+    return student;
 };
 
 exports.getAllStudents = async ({ page = 1, limit = 5, search = '' }) => {
@@ -53,6 +71,12 @@ exports.updateStudent = async (id, data) => {
         throw { status: 404, message: 'Student not found' };
     }
 
+    // Emit real-time event
+    const ioInstance = getIO();
+    if (ioInstance) {
+        ioInstance.emit('studentUpdated', updated);
+    }
+
     return updated;
 };
 
@@ -65,6 +89,12 @@ exports.deleteStudent = async (id) => {
 
     if (!deleted) {
         throw { status: 404, message: 'Student not found' };
+    }
+
+    // Emit real-time event
+    const ioInstance = getIO();
+    if (ioInstance) {
+        ioInstance.emit('studentDeleted', { id, deletedStudent: deleted });
     }
 
     return deleted;
