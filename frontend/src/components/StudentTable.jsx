@@ -3,30 +3,49 @@ import Button from './Button';
 
 export default function StudentTable({ students, onDelete }) {
   return (
-    <table className="w-full text-left mt-4 border-collapse">
-      <thead>
-        <tr className="bg-blue-500 text-white">
-          <th className="p-4 rounded-tl">Name</th>
-          <th className="p-4">Age</th>
-          <th className="p-4">Course</th>
-          <th className="p-4 rounded-tr">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {students.map((student) => (
-          <tr key={student._id} className="border-b">
-            <td className="p-4">{student.name}</td>
-            <td className="p-4">{student.age}</td>
-            <td className="p-4">{student.course}</td>
-            <td className="p-4 flex gap-2">
-              <Link to={`/edit/${student._id}`} className="bg-yellow-500 text-white p-2 rounded inline-block text-center">
-                Edit
-              </Link>
-              <Button onClick={() => onDelete(student._id)}>Delete</Button>
-            </td>
+    <div className="overflow-x-auto w-full">
+      <table className="w-full text-left border-collapse whitespace-nowrap">
+        <thead>
+          <tr className="bg-slate-800/80 text-slate-300 text-sm tracking-wider uppercase border-b border-slate-700/50 hidden sm:table-row">
+            <th className="p-5 font-semibold">Name</th>
+            <th className="p-5 font-semibold">Age</th>
+            <th className="p-5 font-semibold">Course</th>
+            <th className="p-5 font-semibold text-right">Action</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody className="divide-y divide-slate-700/50">
+          {students.map((student) => {
+            const studentId = student._id || student.id;
+            return (
+            <tr key={studentId} className="hover:bg-slate-700/30 transition-colors group flex flex-col sm:table-row p-4 sm:p-0">
+              <td className="p-2 sm:p-5">
+                <span className="sm:hidden text-slate-400 text-xs uppercase tracking-wider block mb-1">Name</span>
+                <span className="font-medium text-white">{student.name}</span>
+              </td>
+              <td className="p-2 sm:p-5 text-slate-300">
+                <span className="sm:hidden text-slate-400 text-xs uppercase tracking-wider block mb-1">Age</span>
+                {student.age}
+              </td>
+              <td className="p-2 sm:p-5">
+                <span className="sm:hidden text-slate-400 text-xs uppercase tracking-wider block mb-1">Course</span>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                  {student.course}
+                </span>
+              </td>
+              <td className="p-2 sm:p-5 sm:text-right">
+                <div className="flex gap-3 sm:justify-end mt-2 sm:mt-0">
+                  <Link to={`/edit/${studentId}`} className="flex-1 sm:flex-none justify-center items-center text-sm px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors shadow-sm cursor-pointer text-center">
+                    Edit
+                  </Link>
+                  <button onClick={() => onDelete(studentId)} className="flex-1 sm:flex-none justify-center items-center text-sm px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors border border-red-500/20 cursor-pointer">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          )})}
+        </tbody>
+      </table>
+    </div>
   );
 }

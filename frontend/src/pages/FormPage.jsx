@@ -29,8 +29,15 @@ export default function FormPage() {
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">{id ? 'Edit Student' : 'Add Student'}</h2>
+    <div className="p-4 flex flex-col items-center pt-10">
+      <div className="w-full max-w-lg mb-8 text-center">
+        <h2 className="text-3xl font-extrabold text-white tracking-tight">
+          {id ? 'Edit Student Record' : 'Enroll New Student'}
+        </h2>
+        <p className="text-slate-400 mt-2">
+          {id ? 'Update the details of the student below.' : 'Fill out the form below to add a student to the database.'}
+        </p>
+      </div>
       <StudentForm initialData={initialData} />
     </div>
   );

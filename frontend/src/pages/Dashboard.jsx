@@ -57,19 +57,31 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Dashboard</h2>
-          <Link to="/add" className="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2 flex text-sm shadow-sm transition">
-              + New Student
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Dashboard</h2>
+            <p className="text-slate-400 text-sm mt-1">Manage your student directory</p>
+          </div>
+          <Link to="/add" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold rounded-lg px-5 py-2.5 flex items-center gap-2 shadow-lg shadow-purple-500/30 transition-all duration-300 hover:-translate-y-0.5">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+              New Student
           </Link>
       </div>
       
-      {students.length === 0 ? (
-        <p>No students found. Try adding one!</p>
-      ) : (
-        <StudentTable students={students} onDelete={handleDelete} />
-      )}
+      <div className="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-1 shadow-xl">
+        {students.length === 0 ? (
+          <div className="p-12 text-center flex flex-col items-center">
+            <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mb-4">
+               <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-1">No students found</h3>
+            <p className="text-slate-400">Get started by creating a new student record.</p>
+          </div>
+        ) : (
+          <StudentTable students={students} onDelete={handleDelete} />
+        )}
+      </div>
     </div>
   );
 }
