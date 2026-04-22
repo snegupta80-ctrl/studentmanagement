@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getStudents, deleteStudent } from '../services/studentService';
 import StudentTable from '../components/StudentTable';
 import { Link } from 'react-router-dom';
+import { connectSocket, onStudentCreated, onStudentUpdated, onStudentDeleted, offStudentCreated, offStudentUpdated, offStudentDeleted } from '../services/socket';
 
 export default function Dashboard() {
   const [students, setStudents] = useState([]);
@@ -10,6 +11,39 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
+
+    // Connect socket and set up real-time listeners
+    connectSocket();
+
+    const handleStudentCreated = (newStudent) => {
+      setStudents(prev => [newStudent, ...prev]);
+    };
+
+    const handleStudentUpdated = (updatedStudent) => {
+      setStudents(prev => prev.map(student => 
+        (student._id || student.id) === (updatedStudent._id || updatedStudent.id) 
+          ? updatedStudent 
+          : student
+      ));
+    };
+
+    const handleStudentDeleted = (data) => {
+      const deletedId = data.id;
+      setStudents(prev => prev.filter(student => 
+        (student._id || student.id) !== deletedId
+      ));
+    };
+
+    onStudentCreated(handleStudentCreated);
+    onStudentUpdated(handleStudentUpdated);
+    onStudentDeleted(handleStudentDeleted);
+
+    // Cleanup listeners on unmount
+    return () => {
+      offStudentCreated(handleStudentCreated);
+      offStudentUpdated(handleStudentUpdated);
+      offStudentDeleted(handleStudentDeleted);
+    };
   }, []);
 
   const fetchData = async () => {
