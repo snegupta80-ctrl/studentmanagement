@@ -13,6 +13,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add" element={<FormPage />} />
+          <Route path="/edit/:id" element={<FormPage />} />
         </Routes>
       </div>
     </BrowserRouter>

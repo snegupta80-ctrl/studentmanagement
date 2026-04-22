@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const studentRoutes = require('./routes/student.routes');
 const logger = require('./middlewares/logger.middleware');
 const errorHandler = require('./middlewares/error.middleware');
@@ -7,6 +8,7 @@ const notFound = require('./middlewares/notFound.middleware');
 const app = express();
 
 // Middleware
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 app.use(logger);
 
