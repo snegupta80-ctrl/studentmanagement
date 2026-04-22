@@ -18,6 +18,16 @@ app.use(cors({
 app.use(express.json());
 app.use(logger);
 
+// Health check endpoint for Docker
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        service: 'student-management-api',
+        uptime: process.uptime()
+    });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);

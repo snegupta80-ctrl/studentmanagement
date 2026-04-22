@@ -1,0 +1,31 @@
+# Development override file
+# This file extends docker-compose.yml for local development
+# Usage: docker-compose up (automatically loads this file)
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      target: builder  # Use build stage for development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://admin:admin123@mongodb:27017/student_management?authSource=admin
+    command: npm run dev  # Use nodemon or similar for hot reload
+    
+  frontend:
+    build:
+      target: builder
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=http://localhost:5000/api
+      - VITE_SOCKET_URL=http://localhost:5000
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
