@@ -57,19 +57,25 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 className="text-3xl font-bold text-white tracking-tight">Dashboard</h2>
-            <p className="text-slate-400 text-sm mt-1">Manage your student directory</p>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div className="space-y-1">
+            <h2 className="text-4xl font-extrabold text-white tracking-tight">Student Directory</h2>
+            <p className="text-slate-400 text-base">Manage and track student enrollment records securely.</p>
           </div>
-          <Link to="/add" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold rounded-lg px-5 py-2.5 flex items-center gap-2 shadow-lg shadow-purple-500/30 transition-all duration-300 hover:-translate-y-0.5">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-              New Student
-          </Link>
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl px-4 py-2 flex flex-col items-center justify-center min-w-[100px]">
+              <span className="text-xs text-slate-400 uppercase font-bold tracking-widest">Total</span>
+              <span className="text-2xl font-black text-purple-400 leading-tight">{students.length}</span>
+            </div>
+            <Link to="/add" className="flex-1 md:flex-none bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl px-6 py-3.5 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20 transition-all duration-300 hover:-translate-y-1 active:translate-y-0">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                New Student
+            </Link>
+          </div>
       </div>
       
-      <div className="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-1 shadow-xl">
+      <div className="bg-slate-800/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-2 shadow-2xl overflow-hidden">
         {students.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mb-4">
