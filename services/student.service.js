@@ -1,68 +1,71 @@
 const Student = require('../models/student.model');
-const { generateId } = require('../utils/idGenerator');
+const mongoose = require('mongoose');
 
-let students = []; // In-memory storage
-
-exports.createStudent = (data) => {
-    const errors = Student.validate(data);
-    if (errors.length) {
-        throw { status: 400, message: errors };
-    }
-
-    const student = new Student({
-        id: generateId(),
-        ...data
-    });
-
-    students.push(student);
-    return student;
+exports.createStudent = async (data) => {
+    return await Student.create(data);
 };
 
-exports.getAllStudents = ({ page = 1, limit = 5, search = '' }) => {
-    let filtered = students;
+exports.getAllStudents = async ({ page = 1, limit = 5, search = '' }) => {
+    const query = search
+        ? { name: { $regex: search, $options: 'i' } }
+        : {};
 
-    if (search) {
-        filtered = students.filter(s =>
-            s.name.toLowerCase().includes(search.toLowerCase())
-        );
-    }
+    const skip = (page - 1) * limit;
 
-    const start = (page - 1) * limit;
-    const paginated = filtered.slice(start, start + limit);
+    const students = await Student.find(query)
+        .skip(skip)
+        .limit(Number(limit));
+
+    const total = await Student.countDocuments(query);
 
     return {
-        total: filtered.length,
-        page,
-        data: paginated
+        total,
+        page: Number(page),
+        data: students
     };
 };
 
-exports.getStudentById = (id) => {
-    const student = students.find(s => s.id === id);
-    if (!student) {
-        throw { status: 404, message: 'Student not found' };
+exports.getStudentById = async (id) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw { status: 400, message: 'Invalid ID format' };
     }
-    return student;
-};
 
-exports.updateStudent = (id, data) => {
-    const student = students.find(s => s.id === id);
+    const student = await Student.findById(id);
 
     if (!student) {
         throw { status: 404, message: 'Student not found' };
     }
 
-    Object.assign(student, data);
     return student;
 };
 
-exports.deleteStudent = (id) => {
-    const index = students.findIndex(s => s.id === id);
+exports.updateStudent = async (id, data) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw { status: 400, message: 'Invalid ID format' };
+    }
 
-    if (index === -1) {
+    const updated = await Student.findByIdAndUpdate(id, data, {
+        new: true,
+        runValidators: true
+    });
+
+    if (!updated) {
         throw { status: 404, message: 'Student not found' };
     }
 
-    const deleted = students.splice(index, 1);
-    return deleted[0];
+    return updated;
+};
+
+exports.deleteStudent = async (id) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw { status: 400, message: 'Invalid ID format' };
+    }
+
+    const deleted = await Student.findByIdAndDelete(id);
+
+    if (!deleted) {
+        throw { status: 404, message: 'Student not found' };
+    }
+
+    return deleted;
 };

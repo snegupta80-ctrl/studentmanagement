@@ -1,44 +1,44 @@
 const studentService = require('../services/student.service');
 
-exports.createStudent = (req, res, next) => {
+exports.createStudent = async (req, res, next) => {
     try {
-        const student = studentService.createStudent(req.body);
+        const student = await studentService.createStudent(req.body);
         res.status(201).json(student);
     } catch (err) {
         next(err);
     }
 };
 
-exports.getAllStudents = (req, res, next) => {
+exports.getAllStudents = async (req, res, next) => {
     try {
-        const result = studentService.getAllStudents(req.query);
+        const result = await studentService.getAllStudents(req.query);
         res.status(200).json(result);
     } catch (err) {
         next(err);
     }
 };
 
-exports.getStudent = (req, res, next) => {
+exports.getStudent = async (req, res, next) => {
     try {
-        const student = studentService.getStudentById(req.params.id);
+        const student = await studentService.getStudentById(req.params.id);
         res.status(200).json(student);
     } catch (err) {
         next(err);
     }
 };
 
-exports.updateStudent = (req, res, next) => {
+exports.updateStudent = async (req, res, next) => {
     try {
-        const updated = studentService.updateStudent(req.params.id, req.body);
+        const updated = await studentService.updateStudent(req.params.id, req.body);
         res.status(200).json(updated);
     } catch (err) {
         next(err);
     }
 };
 
-exports.deleteStudent = (req, res, next) => {
+exports.deleteStudent = async (req, res, next) => {
     try {
-        const deleted = studentService.deleteStudent(req.params.id);
+        const deleted = await studentService.deleteStudent(req.params.id);
         res.status(200).json(deleted);
     } catch (err) {
         next(err);
