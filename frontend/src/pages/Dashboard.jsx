@@ -2,34 +2,65 @@ import { useState, useEffect } from 'react';
 import { getStudents, deleteStudent } from '../services/studentService';
 import StudentTable from '../components/StudentTable';
 import { Link } from 'react-router-dom';
-import { connectSocket, onStudentCreated, onStudentUpdated, onStudentDeleted, offStudentCreated, offStudentUpdated, offStudentDeleted } from '../services/socket';
+import { connectSocket, onStudentCreated, onStudentUpdated, onStudentDeleted, offStudentCreated, offStudentUpdated, offStudentDeleted, getSocket } from '../services/socket';
+
+// Feature status indicators
+const FeatureBadge = ({ icon, label, active, color }) => (
+  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${active ? color : 'bg-slate-700 text-slate-400'}`}>
+    <span>{icon}</span>
+    <span>{label}</span>
+    <span className={`w-2 h-2 rounded-full ${active ? 'animate-pulse' : ''}`}></span>
+  </div>
+);
 
 export default function Dashboard() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [features, setFeatures] = useState({
+    websocket: false,
+    cloudinary: true,
+    docker: true,
+    deployment: true,
+    logging: true
+  });
 
   useEffect(() => {
     fetchData();
 
     // Connect socket and set up real-time listeners
-    connectSocket();
+    const socket = connectSocket();
+
+    // Track socket connection status
+    const checkConnection = () => {
+      const s = getSocket();
+      const isConnected = s?.connected || false;
+      setSocketConnected(isConnected);
+      setFeatures(prev => ({ ...prev, websocket: isConnected }));
+    };
+
+    // Initial check
+    checkConnection();
+
+    // Set up interval to check connection status
+    const intervalId = setInterval(checkConnection, 2000);
 
     const handleStudentCreated = (newStudent) => {
       setStudents(prev => [newStudent, ...prev]);
     };
 
     const handleStudentUpdated = (updatedStudent) => {
-      setStudents(prev => prev.map(student => 
-        (student._id || student.id) === (updatedStudent._id || updatedStudent.id) 
-          ? updatedStudent 
+      setStudents(prev => prev.map(student =>
+        (student._id || student.id) === (updatedStudent._id || updatedStudent.id)
+          ? updatedStudent
           : student
       ));
     };
 
     const handleStudentDeleted = (data) => {
       const deletedId = data.id;
-      setStudents(prev => prev.filter(student => 
+      setStudents(prev => prev.filter(student =>
         (student._id || student.id) !== deletedId
       ));
     };
@@ -43,6 +74,7 @@ export default function Dashboard() {
       offStudentCreated(handleStudentCreated);
       offStudentUpdated(handleStudentUpdated);
       offStudentDeleted(handleStudentDeleted);
+      clearInterval(intervalId);
     };
   }, []);
 
