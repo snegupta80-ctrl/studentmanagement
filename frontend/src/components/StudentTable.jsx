@@ -7,7 +7,7 @@ export default function StudentTable({ students, onDelete }) {
       <table className="w-full text-left border-collapse whitespace-nowrap">
         <thead>
           <tr className="bg-slate-800/80 text-slate-300 text-sm tracking-wider uppercase border-b border-slate-700/50 hidden sm:table-row">
-            <th className="p-5 font-semibold">Name</th>
+            <th className="p-5 font-semibold">Student</th>
             <th className="p-5 font-semibold">Age</th>
             <th className="p-5 font-semibold">Course</th>
             <th className="p-5 font-semibold text-right">Action</th>
@@ -19,8 +19,26 @@ export default function StudentTable({ students, onDelete }) {
             return (
             <tr key={studentId} className="hover:bg-slate-700/30 transition-colors group flex flex-col sm:table-row p-4 sm:p-0">
               <td className="p-2 sm:p-5">
-                <span className="sm:hidden text-slate-400 text-xs uppercase tracking-wider block mb-1">Name</span>
-                <span className="font-medium text-white">{student.name}</span>
+                <span className="sm:hidden text-slate-400 text-xs uppercase tracking-wider block mb-1">Student</span>
+                <div className="flex items-center gap-3">
+                  {student.image ? (
+                    <img
+                      src={student.image}
+                      alt={student.name}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-purple-500/30"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm border-2 border-purple-500/30">
+                      {student.name?.charAt(0)?.toUpperCase() || '?'}
+                    </div>
+                  )}
+                  <span className="hidden" />
+                  <span className="font-medium text-white">{student.name}</span>
+                </div>
               </td>
               <td className="p-2 sm:p-5 text-slate-300">
                 <span className="sm:hidden text-slate-400 text-xs uppercase tracking-wider block mb-1">Age</span>

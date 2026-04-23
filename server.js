@@ -12,10 +12,24 @@ connectDB();
 // Create HTTP server (shared for Express and Socket.IO)
 const server = http.createServer(app);
 
+// CORS origins for Socket.IO (must match HTTP CORS)
+const socketOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+    'http://localhost',
+    'http://localhost:80',
+    'http://127.0.0.1'
+];
+if (process.env.CLIENT_URL) {
+    socketOrigins.push(process.env.CLIENT_URL);
+}
+
 // Initialize Socket.IO
 const io = new Server(server, {
     cors: {
-        origin: process.env.CLIENT_URL || ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'],
+        origin: socketOrigins,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         credentials: true
     }

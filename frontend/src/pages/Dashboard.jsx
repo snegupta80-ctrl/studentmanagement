@@ -141,6 +141,57 @@ export default function Dashboard() {
           </div>
       </div>
       
+      {/* Features Status Panel - Shows all 5 active features */}
+      <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-lg">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-slate-400 text-xs font-medium uppercase tracking-wider">Active Features:</span>
+
+          <FeatureBadge
+            icon="⚡"
+            label="WebSockets"
+            active={features.websocket}
+            color="bg-green-500/20 text-green-400 border border-green-500/30"
+          />
+
+          <FeatureBadge
+            icon="☁️"
+            label="Cloudinary"
+            active={features.cloudinary}
+            color="bg-blue-500/20 text-blue-400 border border-blue-500/30"
+          />
+
+          <FeatureBadge
+            icon="🐳"
+            label="Docker"
+            active={features.docker}
+            color="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+          />
+
+          <FeatureBadge
+            icon="🚀"
+            label="Render Deploy"
+            active={features.deployment}
+            color="bg-purple-500/20 text-purple-400 border border-purple-500/30"
+          />
+
+          <FeatureBadge
+            icon="🔧"
+            label="Logging + Retry"
+            active={features.logging}
+            color="bg-amber-500/20 text-amber-400 border border-amber-500/30"
+          />
+        </div>
+
+        {socketConnected && (
+          <div className="mt-3 pt-3 border-t border-white/5 flex items-center gap-2 text-xs text-green-400">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Real-time updates active • Changes sync instantly across all connected clients</span>
+          </div>
+        )}
+      </div>
+
       <div className="bg-slate-800/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-2 shadow-2xl overflow-hidden">
         {students.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
